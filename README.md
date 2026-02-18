@@ -1,3 +1,29 @@
+## 🔧 Challenges & Solutions
+
+During development and deployment I encountered several real-world issues. Documenting them here shows the debugging steps, trade-offs, and production hardening that make this project interview-ready.
+
+### 1. OAuth redirect went to `localhost` in production
+**Problem:** After deploying to Vercel, Google OAuth / Supabase redirected to `http://localhost:3000/auth/callback`, breaking the login flow for live users.  
+**Solution:**  
+- Added `NEXT_PUBLIC_SITE_URL` environment variable on Vercel set to the production URL.  
+- In Supabase Auth → URL Configuration set `Site URL` to the Vercel URL and added `https://<your-vercel>/auth/callback` to Redirect URLs.  
+- Used `redirectTo: `${window.location.origin}/auth/callback`` in the sign-in call so the same code works on both localhost and prod.
+
+### 2. Build failed on Vercel due to missing env vars
+**Problem:** The app built locally (using `.env.local`) but Vercel build failed with errors referencing the Supabase client.  
+**Solution:**  
+- Added `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to Vercel Environment Variables (production + preview).  
+- Redeployed and verified the build passed.
+
+### 3. Row-Level Security (RLS) blocked updates/inserts silently
+**Problem:** CRUD requests looked like they succeeded locally but failed in production or returned empty errors.  
+**Solution:**  
+- Enabled RLS on `bookmarks` table and added explicit policies for `SELECT`, `INSERT`, `UPDATE`, and `DELETE`:
+  ```sql
+  create policy "Users can view own bookmarks" on bookmarks for select using (auth.uid() = user_id);
+  create policy "Users can insert own bookmarks" on bookmarks for insert with check (auth.uid() = user_id);
+  create policy "Users can update own bookmarks" on bookmarks for update using (auth.uid() = user_id);
+  create policy "Users can delete own bookmarks" on bookmarks for delete using (auth.uid() = user_id);
 # 🚀 Smart Bookmark App
 
 A production-ready full-stack bookmark management application built using **Next.js 16 (App Router), Supabase, and Tailwind CSS**.
