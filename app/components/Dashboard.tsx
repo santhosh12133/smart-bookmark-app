@@ -24,7 +24,7 @@ export default function Dashboard({ bookmarks }: DashboardProps) {
   ]
 
   return (
-    <section aria-labelledby="overview-title" className="rounded-3xl border border-slate-200/80 bg-transparent p-0">
+    <div aria-labelledby="overview-title" className="rounded-3xl border border-slate-200/80 bg-transparent p-0">
       <div className="mb-4 flex items-end justify-between px-1">
         <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600">Overview</p><h2 id="overview-title" className="mt-1 text-xl font-black tracking-tight text-slate-900">Library at a glance</h2></div>
         <span className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-400 sm:block">Live</span>
@@ -42,6 +42,6 @@ export default function Dashboard({ bookmarks }: DashboardProps) {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   )
 }
