@@ -28,15 +28,22 @@ export default function Login() {
     try {
       const requestedPath = searchParams.get("redirectTo")
       const safePath =
-        requestedPath && requestedPath.startsWith("/") && !requestedPath.startsWith("//")
+        requestedPath &&
+        requestedPath.startsWith("/") &&
+        !requestedPath.startsWith("//")
           ? requestedPath
           : "/"
 
-      const redirectUrl = `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(safePath)}`
+      // Always derive the OAuth callback from the browser's current origin.
+      // This prevents a production deployment from accidentally using localhost.
+      const callbackUrl = new URL("/auth/callback", window.location.origin)
+      if (safePath !== "/") {
+        callbackUrl.searchParams.set("redirectTo", safePath)
+      }
 
       const { error: signInError } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: redirectUrl },
+        options: { redirectTo: callbackUrl.toString() },
       })
 
       if (signInError) {
@@ -60,9 +67,7 @@ export default function Login() {
         <h1 id="login-title" className="text-3xl font-bold text-white mb-2">
           Smart Bookmark App
         </h1>
-        <p className="text-sm text-white/70 mb-8">
-          Organize your links smartly
-        </p>
+        <p className="text-sm text-white/70 mb-8">Organize your links smartly</p>
 
         {error && (
           <div
