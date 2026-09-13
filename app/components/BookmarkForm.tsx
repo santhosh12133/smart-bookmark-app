@@ -14,9 +14,7 @@ interface BookmarkFormProps {
   updating: boolean
 }
 
-export default function BookmarkForm({ title, setTitle, url, setTitle: _setTitle, category, setCategory, formError, setFormError, addBookmark, adding, updating }: BookmarkFormProps) {
-  // Keep the existing controlled state API while giving the form a clearer visual hierarchy.
-  void _setTitle
+export default function BookmarkForm({ title, setTitle, url, setUrl, category, setCategory, formError, setFormError, addBookmark, adding, updating }: BookmarkFormProps) {
   return (
     <section aria-labelledby="add-bookmark-title" className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/60 sm:p-8">
       <div className="mb-7 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -31,7 +29,7 @@ export default function BookmarkForm({ title, setTitle, url, setTitle: _setTitle
       <div className="grid gap-5 md:grid-cols-[1fr_1.4fr_180px] md:items-end">
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-slate-700">Title</span>
-          <input type="text" placeholder="e.g. GitHub" value={title} onChange={(e) => { _setTitle(e.target.value); if (formError) setFormError("") }} className={`w-full rounded-xl border bg-slate-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition focus:bg-white focus:ring-4 focus:ring-indigo-100 ${formError && !title ? "border-rose-400" : "border-slate-200"}`} />
+          <input type="text" placeholder="e.g. GitHub" value={title} onChange={(e) => { setTitle(e.target.value); if (formError) setFormError("") }} className={`w-full rounded-xl border bg-slate-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition focus:bg-white focus:ring-4 focus:ring-indigo-100 ${formError && !title ? "border-rose-400" : "border-slate-200"}`} />
         </label>
 
         <label className="block">
