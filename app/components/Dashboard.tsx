@@ -19,22 +19,26 @@ export default function Dashboard({ bookmarks }: DashboardProps) {
   const stats = [
     ["Total bookmarks", bookmarks.length, "Saved links", icons[0]],
     ["Favorites", bookmarks.filter((b) => b.is_favorite).length, "Starred links", icons[1]],
-    ["Categories", new Set(bookmarks.map((b) => b.category ?? "General")).size, "Used in your library", icons[2]],
+    ["Categories", new Set(bookmarks.map((b) => b.category ?? "General")).size, "Used in library", icons[2]],
     ["Latest bookmark", bookmarks[0]?.title ?? "None yet", "Most recently saved", icons[3]],
   ]
 
   return (
-    <section aria-labelledby="overview-title" className="rounded-3xl border border-slate-200/80 bg-slate-50/80 p-5 sm:p-7">
-      <div className="mb-5 flex items-end justify-between">
-        <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">Overview</p><h2 id="overview-title" className="mt-1 text-xl font-bold text-slate-900">Your library at a glance</h2></div>
-        <span className="hidden text-xs text-slate-400 sm:block">Live statistics</span>
+    <section aria-labelledby="overview-title" className="rounded-3xl border border-slate-200/80 bg-transparent p-0">
+      <div className="mb-4 flex items-end justify-between px-1">
+        <div><p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600">Overview</p><h2 id="overview-title" className="mt-1 text-xl font-black tracking-tight text-slate-900">Library at a glance</h2></div>
+        <span className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-400 sm:block">Live</span>
       </div>
-      <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+      <div className={`grid grid-cols-1 gap-3 sm:grid-cols-2 transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
         {stats.map(([label, value, helper, icon], index) => (
-          <div key={String(label)} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/50">
-            <div className="flex items-center justify-between"><span className={`grid h-10 w-10 place-items-center rounded-xl ${index === 1 ? "bg-amber-50 text-amber-600" : "bg-indigo-50 text-indigo-600"}`}>{icon}</span><span className="text-xs font-medium text-slate-400">{helper}</span></div>
-            <p className="mt-5 text-sm font-medium text-slate-500">{label}</p>
-            <p className="mt-1 truncate text-2xl font-bold tracking-tight text-slate-900">{String(value)}</p>
+          <div key={String(label)} className={`group relative overflow-hidden rounded-3xl border p-5 transition duration-300 hover:-translate-y-1 ${index === 3 ? "bg-gradient-to-br from-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-200/50 border-transparent sm:col-span-2" : "border-slate-200 bg-white shadow-sm hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/40"}`}>
+            <div className="flex items-start justify-between gap-3">
+              <span className={`grid h-10 w-10 place-items-center rounded-xl ${index === 1 ? "bg-amber-50 text-amber-600" : index === 3 ? "bg-white/15 text-white" : "bg-indigo-50 text-indigo-600"}`}>{icon}</span>
+              <span className={`text-[10px] font-bold uppercase tracking-wide ${index === 3 ? "text-white/65" : "text-slate-400"}`}>{helper}</span>
+            </div>
+            <p className={`mt-5 text-xs font-bold uppercase tracking-wide ${index === 3 ? "text-white/70" : "text-slate-400"}`}>{label}</p>
+            <p className={`mt-1 truncate text-2xl font-black tracking-tight ${index === 3 ? "text-white" : "text-slate-900"}`}>{String(value)}</p>
+            {index === 0 && <div aria-hidden="true" className="absolute -bottom-8 -right-5 h-24 w-24 rotate-12 rounded-3xl bg-indigo-50/80" />}
           </div>
         ))}
       </div>
