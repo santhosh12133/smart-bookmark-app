@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f7fb;
-  --foreground: #172033;
+  --background: #f7f8fc;
+  --foreground: #17172b;
   --surface: #ffffff;
-  --muted: #667085;
-  --border: #e4e9f1;
-  --primary: #4f46e5;
-  --primary-dark: #3730a3;
-  --accent: #06b6d4;
+  --muted: #71718a;
+  --border: #e7e7f0;
+  --primary: #635bff;
+  --primary-dark: #4f46e5;
+  --accent: #22d3ee;
+  --violet-soft: #f0edff;
+  --cyan-soft: #ecfeff;
+  --rose-soft: #fff1f2;
 }
 
 * { box-sizing: border-box; }
@@ -22,25 +25,173 @@ body {
 }
 button, input, select { font: inherit; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
-  outline: 3px solid rgba(79, 70, 229, 0.28);
+  outline: 3px solid rgba(99, 91, 255, 0.25);
   outline-offset: 2px;
 }
-::selection { background: rgba(79, 70, 229, 0.18); }
+::selection { background: rgba(99, 91, 255, 0.16); }
 
-/* Dashboard-wide visual refresh: cool slate canvas + indigo/cyan accents. */
+/* ─────────────────────────────────────────────
+   BENTO GRID SYSTEM
+   The dashboard is intentionally asymmetric: large
+   content blocks sit beside compact information cards.
+   ───────────────────────────────────────────── */
 main.min-h-screen.bg-linear-to-br {
   background:
-    radial-gradient(circle at 8% 0%, rgba(99, 102, 241, 0.10), transparent 28%),
-    radial-gradient(circle at 92% 12%, rgba(6, 182, 212, 0.08), transparent 24%),
-    #f4f7fb;
+    radial-gradient(circle at 4% 0%, rgba(99, 91, 255, 0.12), transparent 25%),
+    radial-gradient(circle at 96% 8%, rgba(34, 211, 238, 0.10), transparent 23%),
+    #f7f8fc;
 }
 
-main.min-h-screen.bg-linear-to-br .bg-white {
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
 }
 
-main.min-h-screen.bg-linear-to-br .shadow-lg {
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+/* Header: full-width hero tile */
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:first-child {
+  grid-column: 1 / -1;
+  min-height: 150px;
+  padding: 30px 34px;
+  border: 1px solid rgba(231, 231, 240, 0.95);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 15%, rgba(34, 211, 238, 0.16), transparent 22%),
+    linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+  box-shadow: 0 18px 45px rgba(31, 27, 75, 0.07);
+}
+
+/* Add-bookmark tile: wide */
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > section {
+  grid-column: span 8;
+  border-radius: 26px;
+  border-color: var(--border);
+  box-shadow: 0 14px 35px rgba(31, 27, 75, 0.055);
+}
+
+/* Stats tile: right-side bento block */
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) {
+  grid-column: span 4;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+}
+
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) > div {
+  padding: 0;
+  background: transparent;
+}
+
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid > div {
+  min-height: 150px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 14px 35px rgba(31, 27, 75, 0.055);
+}
+
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid > div:last-child {
+  grid-column: 1 / -1;
+  min-height: 128px;
+  background: linear-gradient(135deg, #635bff, #7c3aed);
+  border-color: transparent;
+  color: white;
+}
+
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid > div:last-child div {
+  color: rgba(255,255,255,0.72);
+}
+
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid > div:last-child div:last-child {
+  color: white;
+}
+
+/* Bookmark library: full-width bento base */
+main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:last-child {
+  grid-column: 1 / -1;
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: rgba(255,255,255,0.82);
+  box-shadow: 0 18px 45px rgba(31, 27, 75, 0.055);
+}
+
+/* Consistent controls */
+main.min-h-screen.bg-linear-to-br input,
+main.min-h-screen.bg-linear-to-br select {
+  border-color: var(--border);
+  background: #fafaff;
+  border-radius: 14px;
+}
+
+main.min-h-screen.bg-linear-to-br input:focus,
+main.min-h-screen.bg-linear-to-br select:focus {
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.10);
+}
+
+/* Bookmark cards get a clean tile treatment */
+main.min-h-screen.bg-linear-to-br .grid.gap-4 > div {
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+main.min-h-screen.bg-linear-to-br .grid.gap-4 > div:hover {
+  transform: translateY(-2px);
+  border-color: #c9c5ff;
+  box-shadow: 0 12px 28px rgba(31, 27, 75, 0.08);
+}
+
+@media (max-width: 1024px) {
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > section,
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:first-child,
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > section,
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:last-child {
+    width: 100%;
+    border-radius: 22px;
+  }
+
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:first-child {
+    min-height: auto;
+    padding: 22px;
+  }
+
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:nth-child(3) .grid > div {
+    min-height: 125px;
+    padding: 17px;
+  }
+
+  main.min-h-screen.bg-linear-to-br > div.max-w-7xl > div:last-child {
+    padding: 18px;
+  }
 }
 
 @keyframes fade-up {
