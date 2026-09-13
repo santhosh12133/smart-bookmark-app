@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabaseClient"
 
-export default function Login() {
+function LoginContent() {
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [animated, setAnimated] = useState(false)
@@ -90,5 +90,22 @@ export default function Login() {
         </div>
       </section>
     </main>
+  )
+}
+
+export default function Login() {
+  return (
+    <Suspense
+      fallback={
+        <main className="bento-login min-h-screen bg-[#0b1020] flex items-center justify-center p-5 sm:p-8">
+          <section className="w-full max-w-md rounded-[28px] border border-white/10 bg-white/[0.07] p-7 sm:p-10 text-center shadow-2xl backdrop-blur-xl">
+            <div className="mx-auto h-16 w-16 animate-pulse rounded-2xl bg-white/10" aria-hidden="true" />
+            <p className="mt-6 text-sm text-slate-300">Loading sign-in…</p>
+          </section>
+        </main>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   )
 }
