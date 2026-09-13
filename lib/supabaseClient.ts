@@ -1,9 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+import { env } from './env'
 
 export const supabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey
+  env.supabaseUrl,
+  env.supabaseAnonKey,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  }
 )
