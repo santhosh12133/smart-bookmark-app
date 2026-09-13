@@ -1,14 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 import { env } from './env'
 
-export const supabase = createClient(
+// Browser client uses secure, SSR-compatible cookie session handling.
+export const supabase = createBrowserClient(
   env.supabaseUrl,
-  env.supabaseAnonKey,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-    },
-  }
+  env.supabaseAnonKey
 )
