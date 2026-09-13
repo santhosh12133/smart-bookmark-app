@@ -1,119 +1,271 @@
-# Smart Bookmark App
+# Smart Bookmark
 
-A production-oriented full-stack bookmark management application built with **Next.js 16, TypeScript, Supabase, and Tailwind CSS**.
+> A production-oriented, full-stack bookmark workspace for saving, organizing, discovering, and managing links.
 
-Smart Bookmark lets authenticated users save, organize, search, filter, favorite, edit, and delete links from a responsive dashboard with a modern **Bento Grid** interface.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Production-black?logo=vercel)](https://vercel.com/)
 
-## 🌍 Live Demo
+## Overview
 
-https://smart-bookmark-app-silk-kappa.vercel.app
+Smart Bookmark is a modern bookmark management application built with **Next.js 16, React 19, TypeScript, Tailwind CSS, and Supabase**. It combines authenticated user workspaces, PostgreSQL persistence, Row Level Security, responsive Bento Grid UI, and optimistic interactions in a focused product experience.
 
-## ✨ Product Highlights
+The project is intentionally structured as a portfolio-quality production application: authentication, authorization, UI state, deployment configuration, accessibility, and operational documentation are treated as first-class concerns.
 
-- Google OAuth authentication through Supabase Auth
-- Protected authenticated experience
-- User-isolated bookmark data with PostgreSQL Row Level Security
-- Full bookmark CRUD
-- Search, category filtering, favorites, and sorting
-- Dashboard metrics for bookmarks, favorites, categories, and latest activity
-- Optimistic UI updates with server consistency checks
-- Responsive Bento Grid design for desktop, tablet, and mobile
-- Accessible keyboard focus states and reduced-motion support
-- Production-safe OAuth callback handling
-- Vercel deployment with environment-based configuration
+## Live Application
 
-## 🎨 UI / UX Architecture
+**Production:** https://smart-bookmark-app-silk-kappa.vercel.app
 
-The latest release introduces a reusable visual system rather than page-specific styling.
+**Repository:** https://github.com/santhosh12133/smart-bookmark-app
 
-### Bento Grid layout
+## Product Capabilities
 
-The dashboard is structured into independent visual tiles:
+| Area | Capability |
+| --- | --- |
+| Authentication | Google OAuth through Supabase Auth |
+| Workspace | Protected authenticated dashboard |
+| Bookmarks | Create, read, update, delete |
+| Organization | Categories and favorites |
+| Discovery | Search, filtering, sorting |
+| Insights | Bookmark, favorite, category, and latest-activity metrics |
+| Interaction | Optimistic UI with server reconciliation |
+| Security | PostgreSQL Row Level Security |
+| UX | Responsive Bento Grid system |
+| Accessibility | Keyboard focus, semantic controls, reduced motion, async state feedback |
+| Deployment | GitHub → Vercel → Supabase |
 
-1. Product/header tile
-2. Bookmark creation workspace
-3. Analytics/stat tiles
-4. Search and filter control strip
-5. Responsive bookmark gallery
-6. Empty and editing states
+## Design System
 
-The layout uses a 12-column desktop grid, adapts to tablet widths, and collapses into a single-column mobile experience.
-
-### Visual system
-
-- Neutral application background with indigo/cyan brand accents
-- Consistent surface, border, radius, and shadow tokens
-- Layered cards instead of heavy gradients
-- Clear primary-action hierarchy
-- Hover and focus feedback
-- Responsive spacing and typography
-- Accessible `focus-visible` treatment
-- Reduced-motion support for users who prefer less animation
-
-### Authentication experience
-
-The login screen follows the same product language with a premium dark Bento-inspired surface, clear Google sign-in CTA, explicit error messaging, loading feedback, and secure-authentication context.
-
-## 🏗️ Architecture
+The dashboard uses a **Bento Grid** composition instead of a conventional single-column admin layout.
 
 ```text
-Browser
-  │
-  ▼
-Next.js App Router
-  │
-  ├── Protected Dashboard
-  ├── Login / OAuth initiation
-  └── /auth/callback
-          │
-          ▼
-      Supabase Auth
-          │
-          ▼
-   PostgreSQL + RLS
-          │
-          ▼
-       bookmarks
+┌───────────────────────────┬──────────────────────┐
+│ Product / Welcome         │ Analytics             │
+├───────────────────────────┴──────────────────────┤
+│ Add bookmark / primary workflow                  │
+├───────────────────────────┬──────────────────────┤
+│ Search / filters          │ Library controls      │
+├───────────────────────────┴──────────────────────┤
+│ Responsive bookmark collection                   │
+└──────────────────────────────────────────────────┘
 ```
 
-### Frontend
+Design principles:
 
-- Next.js 16 App Router
-- React
-- TypeScript
-- Tailwind CSS
-- Modular client components
+- Strong visual hierarchy around the primary bookmark workflow.
+- Reusable surface, border, radius, spacing, and typography tokens.
+- Restrained brand accents rather than excessive gradients.
+- Clear hover, active, disabled, and keyboard-focus states.
+- Responsive behavior across desktop, tablet, and mobile.
+- Reduced-motion support for users who prefer minimal animation.
 
-### Backend / data
+## Architecture
 
-- Supabase PostgreSQL
-- Supabase Auth
-- Row Level Security (RLS)
+```text
+                           ┌──────────────────┐
+                           │      Google      │
+                           │      OAuth       │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+┌──────────────┐      ┌─────────────────────────┐
+│   Browser    │ ───▶ │     Next.js App Router  │
+│  React UI    │      │                         │
+└──────────────┘      │ Login / Dashboard /     │
+                      │ OAuth callback          │
+                      └───────────┬─────────────┘
+                                  │
+                         ┌────────▼────────┐
+                         │  Supabase Auth  │
+                         └────────┬────────┘
+                                  │ session
+                         ┌────────▼────────┐
+                         │ PostgreSQL + RLS│
+                         │   bookmarks     │
+                         └─────────────────┘
+                                  │
+                                  ▼
+                               Vercel
+```
 
-### Hosting
+For deeper system details, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-- Vercel
-- GitHub-based deployment workflow
+## Technology Stack
 
-## 🔐 Authentication & Security
+### Application
 
-Google OAuth is initiated through Supabase Auth. The application uses a dedicated `/auth/callback` route and builds the callback URL from the current application origin so the same flow works in local and deployed environments.
+- **Next.js 16** — App Router and production React framework.
+- **React 19** — component-driven UI.
+- **TypeScript 5** — static typing and safer refactoring.
+- **Tailwind CSS 4** — utility-based styling and responsive design.
 
-Database access is protected by RLS. The fundamental ownership rule is:
+### Platform
+
+- **Supabase Auth** — authentication and Google OAuth.
+- **Supabase PostgreSQL** — persistent bookmark storage.
+- **PostgreSQL RLS** — database-level authorization.
+- **Vercel** — production hosting and deployment.
+- **GitHub** — source control and deployment integration.
+
+## Security Model
+
+The database is the authorization boundary. Every bookmark row is associated with an authenticated user and protected through RLS.
+
+Core ownership rule:
 
 ```sql
 auth.uid() = user_id
 ```
 
-The client also scopes bookmark queries to the authenticated user:
+Expected policies cover `SELECT`, `INSERT`, `UPDATE`, and `DELETE` operations. Client-side filtering such as `.eq("user_id", userId)` improves query scoping but **does not replace RLS**.
 
-```ts
-.eq("user_id", userId)
+Security requirements:
+
+- Never expose a Supabase service-role key in browser code.
+- Keep deployment-specific configuration in environment variables.
+- Register only approved OAuth redirect URLs.
+- Never commit `.env.local` or private credentials.
+- Rotate credentials immediately if they are accidentally exposed.
+
+See [`SECURITY.md`](SECURITY.md) for the security policy.
+
+## Authentication Flow
+
+```text
+/login
+   │
+   │ signInWithOAuth()
+   ▼
+Supabase Auth
+   │
+   ▼
+Google
+   │
+   ▼
+/auth/callback
+   │
+   ▼
+Authenticated session
+   │
+   ▼
+Dashboard
 ```
 
-The client never exposes a Supabase service-role key.
+The application constructs the callback URL from the active application origin, allowing the same code path to work across local and deployed environments. The corresponding production URL must still be configured in Supabase and Google OAuth settings.
 
-### Required RLS policies
+## Data Flow
+
+```text
+User interaction
+      │
+      ▼
+React component
+      │
+      ├── immediate UI feedback
+      │
+      ▼
+Supabase client
+      │
+      ▼
+PostgreSQL
+      │
+      ├── RLS authorization
+      │
+      ▼
+Database result
+      │
+      ▼
+UI reconciliation
+```
+
+Optimistic interactions are used where they improve responsiveness, while the persisted database state remains authoritative.
+
+## Repository Structure
+
+```text
+smart-bookmark-app/
+├── app/
+│   ├── auth/
+│   │   └── callback/              # OAuth callback route
+│   ├── components/
+│   │   ├── AuthForm.tsx           # Auth UI
+│   │   ├── BookmarkCard.tsx       # Bookmark presentation
+│   │   ├── BookmarkForm.tsx       # Create/edit form
+│   │   ├── BookmarkList.tsx       # Collection rendering
+│   │   └── Dashboard.tsx           # Main workspace
+│   ├── login/
+│   │   └── page.tsx               # Login experience
+│   ├── globals.css                # Global design system
+│   ├── layout.tsx                 # Root layout + metadata
+│   └── page.tsx                   # Application entry point
+├── docs/
+│   ├── ARCHITECTURE.md            # System architecture
+│   └── RELEASE_CHECKLIST.md       # Production verification
+├── lib/
+│   └── supabaseClient.ts          # Supabase client
+├── public/                        # Static assets
+├── CONTRIBUTING.md                # Contribution workflow
+├── SECURITY.md                    # Security policy
+├── package.json                   # Scripts and dependencies
+└── README.md
+```
+
+## Prerequisites
+
+- Node.js compatible with the installed Next.js release.
+- npm.
+- A Supabase project.
+- Google OAuth credentials configured through Supabase Auth.
+
+## Environment Configuration
+
+Create `.env.local` in the project root:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+For production, configure the same public variables in Vercel with the production site URL.
+
+> Do not commit `.env.local`. Public browser configuration is not a substitute for keeping privileged credentials server-side.
+
+## Local Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+### Production verification
+
+```bash
+npm run lint
+npm run build
+npm run start
+```
+
+Running the production build locally is recommended before deploying significant changes.
+
+## Supabase Configuration
+
+### Database
+
+Create the `bookmarks` table with a `user_id` column referencing the authenticated owner and enable RLS.
+
+The application expects policies equivalent to:
 
 ```sql
 create policy "Users can view own bookmarks"
@@ -133,204 +285,105 @@ on bookmarks for delete
 using (auth.uid() = user_id);
 ```
 
-## 📦 Core Features
-
-### Authentication
-
-- Google sign-in
-- OAuth callback processing
-- Protected application experience
-- Logout
-- Loading and error states
-
-### Bookmark management
-
-- Add bookmarks
-- Validate bookmark input
-- Edit existing bookmarks
-- Delete bookmarks
-- Mark/unmark favorites
-- Optimistic interactions
-- Server-side consistency through refetching
-
-### Discovery
-
-- Text search
-- Category filtering
-- Newest/oldest sorting
-- Favorites filtering
-
-### Analytics
-
-- Total bookmarks
-- Total favorites
-- Unique categories
-- Latest bookmark
-
-## 📁 Project Structure
-
-```text
-smart-bookmark-app/
-├── app/
-│   ├── auth/
-│   │   └── callback/
-│   ├── components/
-│   │   ├── AuthForm.tsx
-│   │   ├── BookmarkCard.tsx
-│   │   ├── BookmarkForm.tsx
-│   │   ├── BookmarkList.tsx
-│   │   └── Dashboard.tsx
-│   ├── login/
-│   │   └── page.tsx
-│   ├── page.tsx
-│   ├── globals.css
-│   └── layout.tsx
-├── lib/
-│   └── supabaseClient.ts
-├── public/
-├── package.json
-└── README.md
-```
-
-## ⚙️ Environment Variables
-
-Create `.env.local` for local development:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-For production, configure the same variables in Vercel:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-NEXT_PUBLIC_SITE_URL=https://your-production-domain
-```
-
-Never commit `.env.local` or secret credentials.
-
-## 🚀 Local Development
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Open:
-
-```text
-http://localhost:3000
-```
-
-Build for production:
-
-```bash
-npm run build
-```
-
-Run the production server after building:
-
-```bash
-npm run start
-```
-
-## ☁️ Production Deployment
-
-The application is designed for GitHub → Vercel deployment.
-
-1. Push changes to the `main` branch.
-2. Vercel builds the Next.js application.
-3. Production environment variables are injected by Vercel.
-4. Supabase handles authentication and PostgreSQL access.
-5. The deployed application is served through Vercel's production infrastructure.
-
-### OAuth production configuration
+### OAuth
 
 In Supabase Auth URL Configuration:
 
 - Set the production Site URL to the deployed application URL.
-- Add the production callback URL:
+- Add the production callback route:
 
 ```text
 https://your-production-domain/auth/callback
 ```
 
-Google OAuth credentials must also contain the appropriate production redirect configuration.
+Configure the corresponding authorized redirect URI in the Google OAuth configuration.
 
-## 🧩 Production Hardening Notes
+## Deployment
 
-Several real-world deployment issues were addressed during development:
+The intended deployment model is **GitHub → Vercel → Supabase**.
 
-### OAuth redirect mismatch
+1. Push the validated change to `main`.
+2. Vercel builds the Next.js application.
+3. Vercel injects production environment variables.
+4. The application communicates with Supabase Auth and PostgreSQL.
+5. Smoke-test authentication and bookmark CRUD after deployment.
 
-Production OAuth previously attempted to return to localhost. The callback is now constructed from `window.location.origin`, while the deployment must still have the production URL registered in Supabase and Google OAuth settings.
+### Release criteria
 
-### Missing production environment variables
+A release should not be considered production-ready until:
 
-Local `.env.local` values do not automatically exist in Vercel. Production and preview environments must have the required public Supabase variables configured.
+- The production build succeeds.
+- OAuth login and callback succeed.
+- RLS prevents cross-user data access.
+- Create/edit/delete/favorite flows work.
+- Search/filter/sort work.
+- Responsive layouts remain usable.
+- No secrets are exposed.
 
-### RLS authorization
+See [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md).
 
-CRUD operations require explicit RLS policies. Application-level filtering is useful for query scoping but does not replace database authorization.
+## Accessibility
 
-### Production build compatibility
+Accessibility is part of the product implementation rather than an optional enhancement.
 
-The login page uses `useSearchParams()` inside a Suspense boundary so the route remains compatible with Next.js production builds.
+Current considerations include:
 
-## ♿ Accessibility
+- Semantic interactive elements.
+- Visible `focus-visible` states.
+- Accessible labels and status messaging.
+- `aria-busy` for asynchronous authentication actions.
+- `role="alert"` for authentication errors.
+- Decorative visuals excluded from assistive technology where appropriate.
+- Reduced-motion support.
+- Responsive, touch-friendly controls.
 
-- Semantic controls and labels
-- Visible keyboard focus indicators
-- `aria-busy` on asynchronous sign-in action
-- `role="alert"` for authentication errors
-- Decorative graphics marked as hidden from assistive technology
-- Reduced-motion support
-- Responsive touch-friendly controls
+## Engineering Practices
 
-## 🧠 Engineering Practices Demonstrated
+This repository demonstrates:
 
-- Component-based architecture
-- Type-safe React development
-- OAuth integration
-- Database authorization with RLS
-- Optimistic UI patterns
-- Responsive design systems
-- Accessibility-aware interaction design
-- Environment-based configuration
-- Production deployment and debugging
-- Separation of UI, authentication, and data concerns
+- App Router architecture.
+- Type-safe component development.
+- OAuth integration and callback handling.
+- Database-level authorization with RLS.
+- Optimistic UI and server reconciliation.
+- Reusable design-system tokens.
+- Responsive Bento Grid composition.
+- Accessibility-aware interaction design.
+- Environment-based deployment configuration.
+- Production debugging and release verification.
+- Security and contribution documentation.
 
-## 🔮 Roadmap
+## Documentation Map
 
-Potential next production features:
+| Document | Purpose |
+| --- | --- |
+| `README.md` | Product, setup, architecture, deployment, and engineering overview |
+| `docs/ARCHITECTURE.md` | Detailed application and data architecture |
+| `docs/RELEASE_CHECKLIST.md` | Production release and smoke-test checklist |
+| `SECURITY.md` | Vulnerability reporting and security baseline |
+| `CONTRIBUTING.md` | Development and contribution workflow |
 
-- Tags and collections
-- Pagination / infinite loading for large libraries
-- Link metadata extraction
-- Duplicate-link detection
-- Keyboard shortcuts
-- Realtime synchronization
-- Import/export
-- Usage analytics
-- Custom domains
+## Roadmap
 
-## 👨‍💻 Author
+Potential future capabilities:
 
-**Santhosh Kumar**  
-MCA | Full-Stack Developer
+- Tags, collections, and saved views.
+- Pagination or virtualized loading for large libraries.
+- Automatic link metadata extraction.
+- Duplicate-link detection.
+- Keyboard shortcuts.
+- Realtime synchronization.
+- Import/export workflows.
+- Usage analytics.
+- Custom domains.
+- Automated end-to-end testing and CI quality gates.
+
+## License
+
+This project is currently maintained as a portfolio and learning project. Add an explicit open-source license before accepting external contributions or redistributing the code under open-source terms.
+
+## Maintainer
+
+**Santhosh Kumar**
 
 GitHub: https://github.com/santhosh12133
-
-## 📄 License
-
-This project is built for educational and portfolio purposes.
