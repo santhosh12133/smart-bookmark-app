@@ -1,18 +1,33 @@
-import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js'
+import { NextRequest, NextResponse } from 'next/server'
+import { env } from '@/lib/env'
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
+  const next = requestUrl.searchParams.get('next')
 
-  if (code) {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+  // Only allow local, relative destinations to prevent open redirects.
+  const safeNext = next && next.startsWith('/') && !next.startsWith('//') ? next : '/'
 
-    await supabase.auth.exchangeCodeForSession(code);
+  if (!code) {
+    return NextResponse.redirect(new URL('/login?error=missing_code', requestUrl.origin))
   }
 
-  return NextResponse.redirect(new URL('/', request.url));
+  const supabase = createClient(env.supabaseUrl, env.supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: false,
+    },
+  })
+
+  const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+  if (error) {
+    console.error('[Auth] OAuth callback failed:', error.message)
+    return NextResponse.redirect(new URL('/login?error=oauth_callback_failed', requestUrl.origin))
+  }
+
+  return NextResponse.redirect(new URL(safeNext, requestUrl.origin))
 }
