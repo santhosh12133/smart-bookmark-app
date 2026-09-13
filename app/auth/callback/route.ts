@@ -1,24 +1,34 @@
-import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 import { env } from '@/lib/env'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
-  const next = requestUrl.searchParams.get('next')
-
-  // Only allow local, relative destinations to prevent open redirects.
-  const safeNext = next && next.startsWith('/') && !next.startsWith('//') ? next : '/'
+  const redirectTo = requestUrl.searchParams.get('redirectTo')
+  const safeRedirect =
+    redirectTo && redirectTo.startsWith('/') && !redirectTo.startsWith('//')
+      ? redirectTo
+      : '/'
 
   if (!code) {
-    return NextResponse.redirect(new URL('/login?error=missing_code', requestUrl.origin))
+    return NextResponse.redirect(
+      new URL('/login?error=missing_code', requestUrl.origin)
+    )
   }
 
-  const supabase = createClient(env.supabaseUrl, env.supabaseAnonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: false,
+  const cookieStore = await cookies()
+  const supabase = createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          cookieStore.set(name, value, options)
+        })
+      },
     },
   })
 
@@ -26,8 +36,10 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error('[Auth] OAuth callback failed:', error.message)
-    return NextResponse.redirect(new URL('/login?error=oauth_callback_failed', requestUrl.origin))
+    return NextResponse.redirect(
+      new URL('/login?error=oauth_callback_failed', requestUrl.origin)
+    )
   }
 
-  return NextResponse.redirect(new URL(safeNext, requestUrl.origin))
+  return NextResponse.redirect(new URL(safeRedirect, requestUrl.origin))
 }
